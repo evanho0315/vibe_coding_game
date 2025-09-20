@@ -5,6 +5,65 @@ const scoreElement = document.getElementById('score');
 const livesElement = document.getElementById('lives');
 const messageElement = document.getElementById('gameMessage');
 
+// 音效系統
+const sounds = {
+    background: new Audio('/client/public/sounds/background.mp3'),
+    hit: new Audio('/client/public/sounds/hit.mp3'),
+    success: new Audio('/client/public/sounds/success.mp3'),
+    fail: new Audio('/client/public/sounds/hit.mp3') // 使用hit音效作為失敗音效
+};
+
+// 創建音效池避免音效被截斷
+const hitSounds = [];
+for (let i = 0; i < 5; i++) {
+    const hitSound = new Audio('/client/public/sounds/hit.mp3');
+    hitSound.volume = 0.7;
+    hitSound.preload = 'auto';
+    hitSounds.push(hitSound);
+}
+
+// 設置音效
+sounds.background.loop = true;
+sounds.background.volume = 0.3;
+sounds.background.preload = 'auto';
+sounds.hit.volume = 0.7;
+sounds.hit.preload = 'auto';
+sounds.success.volume = 0.8;
+sounds.success.preload = 'auto';
+sounds.fail.volume = 0.5;
+sounds.fail.preload = 'auto';
+
+// 預載入所有音效
+Object.values(sounds).forEach(sound => sound.load());
+
+// 播放音效函數
+function playSound(soundName) {
+    try {
+        const sound = sounds[soundName];
+        if (sound) {
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log('Audio play failed:', e));
+        }
+    } catch (e) {
+        console.log('Sound error:', e);
+    }
+}
+
+// 開始背景音樂
+function startBackgroundMusic() {
+    try {
+        sounds.background.play().catch(e => console.log('Background music failed:', e));
+    } catch (e) {
+        console.log('Background music error:', e);
+    }
+}
+
+// 停止背景音樂
+function stopBackgroundMusic() {
+    sounds.background.pause();
+    sounds.background.currentTime = 0;
+}
+
 // 遊戲狀態
 let gameState = 'waiting'; // waiting, playing, gameOver, win
 let score = 0;
@@ -85,6 +144,7 @@ function resetGame() {
     initBricks();
     updateUI();
     hideMessage();
+    stopBackgroundMusic();
 }
 
 // 重置球到平板上
@@ -104,6 +164,8 @@ function launchBall() {
         ball.dy = -ball.speed;
         ball.dx = (Math.random() - 0.5) * ball.speed;
         gameState = 'playing';
+        startBackgroundMusic();
+        playSound('hit');
     }
 }
 
@@ -149,6 +211,7 @@ function ballBrickCollision() {
                 brick.visible = false;
                 score++;
                 updateUI();
+                playSound('hit');
                 
                 // 計算球應該從哪個方向反彈
                 const ballCenterX = ball.x;
@@ -183,6 +246,7 @@ function ballPaddleCollision() {
     
     if (detectCollision(ballRect, paddle) && ball.dy > 0) {
         ball.dy = -ball.dy;
+        playSound('hit');
         
         // 根據球碰到平板的位置調整角度
         const hitPos = (ball.x - paddle.x) / paddle.width;
@@ -195,6 +259,8 @@ function checkWin() {
     const visibleBricks = bricks.filter(brick => brick.visible);
     if (visibleBricks.length === 0) {
         gameState = 'win';
+        stopBackgroundMusic();
+        playSound('success');
         showMessage('You Win!', 'win');
     }
 }
@@ -233,6 +299,7 @@ function update() {
                 resetBall();
             } else {
                 gameState = 'gameOver';
+                stopBackgroundMusic();
                 showMessage('Game Over', 'lose');
             }
         }

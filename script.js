@@ -267,15 +267,15 @@ function checkWin() {
 
 // 更新遊戲邏輯
 function update() {
-    if (gameState !== 'playing') return;
-    
-    // 更新平板位置
+    // 更新平板位置（不論遊戲狀態都可以移動）
     if (keys.left && paddle.x > 0) {
         paddle.x -= paddle.speed;
     }
     if (keys.right && paddle.x < canvas.width - paddle.width) {
         paddle.x += paddle.speed;
     }
+    
+    if (gameState !== 'playing') return;
     
     // 更新球位置
     if (!ball.onPaddle) {
@@ -318,9 +318,9 @@ function update() {
 function drawBall() {
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#ff4444';
     ctx.fill();
-    ctx.strokeStyle = '#ddd';
+    ctx.strokeStyle = '#cc0000';
     ctx.lineWidth = 2;
     ctx.stroke();
 }

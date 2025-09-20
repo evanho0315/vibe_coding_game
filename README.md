@@ -1,3 +1,4 @@
+Prompt
 請幫我使用 JavaScript、HTML 和 CSS 製作一個簡單的打磚塊遊戲。  
 
 我的需求如下：  

@@ -275,6 +275,11 @@ function update() {
         paddle.x += paddle.speed;
     }
     
+    // 球在平板上時跟隨平板移動（不論遊戲狀態）
+    if (ball.onPaddle) {
+        ball.x = paddle.x + paddle.width / 2;
+    }
+    
     if (gameState !== 'playing') return;
     
     // 更新球位置
@@ -308,9 +313,6 @@ function update() {
         ballBrickCollision();
         ballPaddleCollision();
         checkWin();
-    } else {
-        // 球在平板上時跟隨平板移動
-        ball.x = paddle.x + paddle.width / 2;
     }
 }
 

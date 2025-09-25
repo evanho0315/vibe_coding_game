@@ -359,11 +359,6 @@ function drawStartMessage() {
         ctx.font = '24px Arial';
         ctx.textAlign = 'center';
         ctx.fillText('按空格鍵開始遊戲', canvas.width / 2, canvas.height / 2);
-        
-        // 添加控制說明
-        ctx.font = '18px Arial';
-        ctx.fillText('使用 ← → 方向鍵控制平板', canvas.width / 2, canvas.height / 2 + 40);
-        ctx.fillText('按下空格鍵發射球', canvas.width / 2, canvas.height / 2 + 65);
     }
 }
 

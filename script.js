@@ -76,7 +76,7 @@ const ball = {
     radius: 8,
     dx: 0,
     dy: 0,
-    speed: 3,
+    speed: 3.5,
     onPaddle: true
 };
 
